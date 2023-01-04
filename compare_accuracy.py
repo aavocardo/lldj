@@ -14,8 +14,10 @@ def precision(predictions: list, targets: list) -> None:
 
     print(f'{exact_match=}\n{predictions=}\n{targets=}')  # NOQA
 
-    print(proximity_sort(predictions, targets))
+    predictions, targets = proximity_sort(predictions, targets)
 
+    print(predictions)
+    print(targets)
 
 
 
