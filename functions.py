@@ -2,13 +2,15 @@ from re import search
 import requests
 
 
+def string_value(value: int) -> str:
+    return f'{value:02}'
+
+
 def collect(draw_number: int) -> list:
     url: str = f'https://www.indexoflebanon.com/lottery/loto/draw/{str(draw_number)}'
     response = requests.get(url, 'html.parser', timeout=10)
-    response.raise_for_status()
     source: str = response.text
 
-    string_value = lambda value: f'{value:02}'      # NOQA E731
     results = [j for i in range(1, 7) for j in range(1, 43)
                if search(f'<div class="loto_no_r bbb{str(i)}">'
                          f'{string_value(j)}</div>', source)]
@@ -23,8 +25,6 @@ def precision(predictions: list, targets: list):
 
 
 def main() -> None:
-    print(collect(1))
-
     prediction_ = [5, 10, 15, 20, 25, 30]
     target_ = [50, 100, 150, 200, 250, 300]
 
