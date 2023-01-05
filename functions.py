@@ -38,10 +38,15 @@ def precision(predictions: list, targets: list):
 
 
 def main() -> None:
-    prediction_ = [5, 10, 15, 20, 25, 30]
-    target_ = [50, 100, 150, 200, 250, 300]
+    p1 = [6, 12, 18, 23, 30, 36]
+    t1 = [14, 21, 26, 23, 30, 35]
 
-    precision(prediction_, target_)
+    p2 = [5, 10, 15, 20, 25, 30]
+    t2 = [50, 100, 150, 200, 250, 300]
+
+    precision(p1, t1)
+    print('\n')
+    precision(p2, t2)
 
 
 if __name__ == '__main__':
