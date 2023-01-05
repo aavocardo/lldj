@@ -1,7 +1,7 @@
 from statistics import mean
 
 
-def precision(predictions: list, targets: list) -> None:
+def precision(predictions: list, targets: list):
     def proximity_sort(list1: list, list2: list) -> tuple:
         zipped_lists = zip(list1, list2)
         zipped_lists = sorted(zipped_lists, key=lambda x: abs(x[0] - x[1]))
