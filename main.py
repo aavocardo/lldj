@@ -6,6 +6,13 @@ def string_value(value: int) -> str:
     return f'{value:02}'
 
 
+def proximity_sort(list1: list, list2: list) -> tuple:
+    zipped_lists = zip(list1, list2)
+    zipped_lists = sorted(zipped_lists, key=lambda x: abs(x[0] - x[1]))
+    list1, list2 = zip(*zipped_lists)
+    return list1, list2
+
+
 def collect(draw_number: int) -> list:
     url: str = f'https://www.indexoflebanon.com/lottery/loto/draw/{str(draw_number)}'
     response = requests.get(url, 'html.parser', timeout=10)
@@ -64,12 +71,6 @@ def compare_precision(prediction, target) -> float:     # DEPRECATING
 
 
 def precision(predictions: list, targets: list):
-    def proximity_sort(list1: list, list2: list) -> tuple:
-        zipped_lists = zip(list1, list2)
-        zipped_lists = sorted(zipped_lists, key=lambda x: abs(x[0] - x[1]))
-        list1, list2 = zip(*zipped_lists)
-        return list1, list2
-
     exact_match = list(filter(lambda y: y in predictions, targets))
     predictions: list = [item for item in predictions if item not in exact_match]
     targets: list = [item for item in targets if item not in exact_match]
