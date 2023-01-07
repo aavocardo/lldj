@@ -2,7 +2,7 @@ from re import search
 import requests
 
 
-def average(args: list) -> int:
+def avg(args: list) -> int:
     return sum(args)/len(args)
 
 
@@ -50,7 +50,7 @@ def compare_precision(prediction, target) -> float:     # DEPRECATING
         _result.append(f'{precision_}%')
         result_.append(int(precision_))
 
-    average_precision: int = round(average(result_))
+    average_precision: int = round(avg(result_))
     print(f'Precision = {average_precision}%')
 
     print('\nPrediction:')
