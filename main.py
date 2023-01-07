@@ -2,6 +2,10 @@ from re import search
 import requests
 
 
+def average(args: list) -> int:
+    return sum(args)/len(args)
+
+
 def string_value(value: int) -> str:
     return f'{value:02}'
 
@@ -31,11 +35,6 @@ def compare_precision(prediction, target) -> float:     # DEPRECATING
     deviation: list = []
     result_: list = []
     _result: list = []
-
-    def average(arg) -> int:
-        total = sum(arg)
-        avg = total/len(arg)
-        return avg
 
     for i in range(len(prediction_)):
         if prediction_[i] <= target_[i]:
@@ -77,10 +76,11 @@ def precision(predictions: list, targets: list):
 
     print(f'{exact_match=}\n{predictions=}\n{targets=}')  # NOQA
 
+    print(f'\n{predictions=}\n{targets=}')
+
     predictions, targets = proximity_sort(predictions, targets)
 
-    print(predictions)
-    print(targets)
+    print(f'\n{predictions=}\n{targets=}')
 
 
 def main() -> None:
