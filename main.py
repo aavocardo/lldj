@@ -2,7 +2,7 @@ from re import search
 import requests
 
 
-def avg(args: list) -> int:
+def average(args: list) -> int:
     return sum(args)/len(args)
 
 
@@ -10,11 +10,18 @@ def string_value(value: int) -> str:
     return f'{value:02}'
 
 
+# def proximity_sort(list1: list, list2: list) -> tuple:
+#     zl = zip(list1, list2)
+#     zl = sorted(zl, key=lambda x: abs(x[0] - x[1]))
+#     list1, list2 = zip(*zl)
+#     return list(list1), list(list2)
+
+
 def proximity_sort(list1: list, list2: list) -> tuple:
-    zipped_lists = zip(list1, list2)
-    zipped_lists = sorted(zipped_lists, key=lambda x: abs(x[0] - x[1]))
-    list1, list2 = zip(*zipped_lists)
-    return list1, list2
+    zl = zip(list1, list2)
+    zl = sorted(zl, key=lambda x: (abs(x[0] - x[1]), x[0]))
+    list1, list2 = zip(*zl)
+    return list(list1), list(list2)
 
 
 def collect(draw_number: int) -> list:
@@ -74,9 +81,7 @@ def precision(predictions: list, targets: list):
     predictions: list = [item for item in predictions if item not in exact_match]
     targets: list = [item for item in targets if item not in exact_match]
 
-    print(f'{exact_match=}\n{predictions=}\n{targets=}')  # NOQA
-
-    print(f'\n{predictions=}\n{targets=}')
+    print(f'{exact_match=}\n\n{predictions=}\n{targets=}')  # NOQA
 
     predictions, targets = proximity_sort(predictions, targets)
 
@@ -90,9 +95,11 @@ def main() -> None:
     p2 = [5, 10, 15, 20, 25, 30]
     t2 = [50, 100, 150, 200, 250, 300]
 
-    precision(p1, t1)
-    print('\n')
-    precision(p2, t2)
+    # precision(p1, t1)
+
+    p, t = proximity_sort([6, 12, 18, 36], [14, 21, 26, 35])
+
+    print(f'{p=}\n{t=}')
 
 
 if __name__ == '__main__':
