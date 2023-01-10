@@ -1,5 +1,6 @@
 from re import search
 import requests
+import random
 
 
 def average(args: list) -> int:
@@ -60,6 +61,12 @@ def collect(draw_number: int) -> list:
 #     # final.extend(deviation)
 #
 #     return final
+
+
+def debug_generator(range_min: int, range_max: int, count: int) -> tuple:
+    x = [random.randint(range_min, range_max) for _ in range(count)]
+    y = [random.randint(range_min, range_max) for _ in range(count)]
+    return x, y
 
 
 def proximity_sort(list1: list, list2: list) -> tuple:
