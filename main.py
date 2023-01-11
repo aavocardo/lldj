@@ -65,7 +65,7 @@ def proximity_sort(list1: list, list2: list) -> tuple:
     zl = zip(list1, list2)
     zl = sorted(zl, key=lambda x: (abs(x[0] - x[1]), x[0]))
     list1, list2 = zip(*zl)
-    return list(list1), list(list2)
+    return list1, list2
 
 
 def precision(predictions: list, targets: list) -> None:
