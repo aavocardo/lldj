@@ -13,8 +13,7 @@ def string_value(value: int) -> str:
 
 def collect(draw_number: int) -> list:
     url: str = f'https://www.indexoflebanon.com/lottery/loto/draw/{str(draw_number)}'
-    response = requests.get(url, 'html.parser', timeout=10)
-    source: str = response.text
+    source: str = requests.get(url, 'html.parser', timeout=10).text
 
     results = [j for i in range(1, 7) for j in range(1, 43)
                if search(f'<div class="loto_no_r bbb{str(i)}">'
