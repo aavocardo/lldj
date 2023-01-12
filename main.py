@@ -3,25 +3,6 @@ import random
 import requests
 
 
-def average(args: list) -> int:
-    return sum(args)/len(args)
-
-
-def string_value(value: int) -> str:
-    return f'{value:02}'
-
-
-def collect(draw_number: int) -> list:
-    url: str = f'https://www.indexoflebanon.com/lottery/loto/draw/{str(draw_number)}'
-    source: str = requests.get(url, 'html.parser', timeout=10).text
-
-    results = [j for i in range(1, 7) for j in range(1, 43)
-               if search(f'<div class="loto_no_r bbb{str(i)}">'
-                         f'{string_value(j)}</div>', source)]
-
-    return results
-
-
 def compare_precision(prediction, target) -> float:     # DEPRECATED
     prediction_: list = prediction
     target_: list = target
@@ -53,6 +34,25 @@ def compare_precision(prediction, target) -> float:     # DEPRECATED
     print(*target_, sep=' - ')
 
     return average_precision/100
+
+
+def average(args: list) -> int:
+    return sum(args)/len(args)
+
+
+def string_value(value: int) -> str:
+    return f'{value:02}'
+
+
+def collect(draw_number: int) -> list:
+    url: str = f'https://www.indexoflebanon.com/lottery/loto/draw/{str(draw_number)}'
+    source: str = requests.get(url, 'html.parser', timeout=10).text
+
+    results = [j for i in range(1, 7) for j in range(1, 43)
+               if search(f'<div class="loto_no_r bbb{str(i)}">'
+                         f'{string_value(j)}</div>', source)]
+
+    return results
 
 
 def debug_generator(range_min: int, range_max: int, count: int) -> tuple:
