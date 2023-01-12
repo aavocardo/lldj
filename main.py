@@ -1,6 +1,6 @@
 from re import search
-import requests
 import random
+import requests
 
 
 def average(args: list) -> int:
@@ -85,10 +85,7 @@ def main() -> None:
     t1 = [14, 21, 26, 23, 30, 35]
 
     p, t = proximity_sort(p1, t1)
-
     print(f'{p=}\n{t=}')
-
-    compare_precision(p1, t1)
 
 
 if __name__ == '__main__':
