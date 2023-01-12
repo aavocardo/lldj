@@ -29,17 +29,17 @@ def compare_precision(prediction, target) -> float:     # DEPRECATED
     result_: list = []
     _result: list = []
 
-    for i in range(len(prediction_)):
-        if prediction_[i] <= target_[i]:
-            temp = str(target_[i] - prediction_[i])
+    for i, value in enumerate(prediction_):
+        if value <= target_[i]:
+            temp = str(target_[i] - value)
             deviation.append(f'±{temp}')
         else:
-            if prediction_[i] >= target_[i]:
-                temp = str(prediction_[i] - target_[i])
+            if value >= target_[i]:
+                temp = str(value - target_[i])
                 deviation.append(f'±{temp}')
 
-    for j in range(len(prediction_)):
-        precision_ = str(int(abs((((target_[j]-prediction_[j])/target_[j])*100)-100)))
+    for _, value in enumerate(prediction_):
+        precision_ = str(int(abs((((target_[_]-value)/target_[_])*100)-100)))
         _result.append(f'{precision_}%')
         result_.append(int(precision_))
 
@@ -87,6 +87,8 @@ def main() -> None:
     p, t = proximity_sort(p1, t1)
 
     print(f'{p=}\n{t=}')
+
+    compare_precision(p1, t1)
 
 
 if __name__ == '__main__':
