@@ -55,7 +55,7 @@ def collect(draw_number: int) -> list:
     return results
 
 
-def dg(range_min: int, range_max: int, count: int) -> tuple:        # dg: debug_generator
+def dg(range_min: int, range_max: int, count: int) -> tuple:    # dg: debug_generator
     x = [random.randint(range_min, range_max) for _ in range(1, count)]
     y = [random.randint(range_min, range_max) for _ in range(1, count)]
     return x, y
@@ -75,20 +75,13 @@ def precision(predictions: list, targets: list):
 
     print(f'{exact_match=}\n\n{predictions=}\n{targets=}')  # NOQA
 
-    predictions, targets = proximity_sort(predictions, targets)
+    sorted_predictions, sorted_targets = proximity_sort(predictions, targets)
 
-    print(f'\n{predictions=}\n{targets=}')
+    print(f'\n{sorted_predictions=}\n{sorted_targets=}')
 
 
 def main() -> None:
-    # p = [6, 12, 18, 23, 30, 36]
-    # t = [14, 21, 26, 23, 30, 35]
-
-    p, t = dg(1, 1000, 200)
-
-    for i in range(100):
-        p.pop(random.randint(1, 100))
-        t.pop(random.randint(1, 100))
+    p, t = dg(1, 100, 20)
 
     precision(p, t)
 
