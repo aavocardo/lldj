@@ -55,9 +55,9 @@ def collect(draw_number: int) -> list:
     return results
 
 
-def debug_generator(range_min: int, range_max: int, count: int) -> tuple:
-    x = [random.randint(range_min, range_max) for _ in range(count)]
-    y = [random.randint(range_min, range_max) for _ in range(count)]
+def dg(range_min: int, range_max: int, count: int) -> tuple:        # dg: debug_generator
+    x = [random.randint(range_min, range_max) for _ in range(1, count)]
+    y = [random.randint(range_min, range_max) for _ in range(1, count)]
     return x, y
 
 
@@ -68,7 +68,7 @@ def proximity_sort(list1: list, list2: list) -> tuple:
     return list1, list2
 
 
-def precision(predictions: list, targets: list) -> None:
+def precision(predictions: list, targets: list):
     exact_match = list(filter(lambda x: x in predictions, targets))
     predictions: list = [item for item in predictions if item not in exact_match]
     targets: list = [item for item in targets if item not in exact_match]
@@ -81,11 +81,16 @@ def precision(predictions: list, targets: list) -> None:
 
 
 def main() -> None:
-    p1 = [6, 12, 18, 23, 30, 36]
-    t1 = [14, 21, 26, 23, 30, 35]
+    # p = [6, 12, 18, 23, 30, 36]
+    # t = [14, 21, 26, 23, 30, 35]
 
-    p, t = proximity_sort(p1, t1)
-    print(f'{p=}\n{t=}')
+    p, t = dg(1, 1000, 200)
+
+    for i in range(100):
+        p.pop(random.randint(1, 100))
+        t.pop(random.randint(1, 100))
+
+    precision(p, t)
 
 
 if __name__ == '__main__':
