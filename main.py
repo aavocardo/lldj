@@ -1,43 +1,8 @@
 from re import search
-import random
+import statistics
 import requests
-
-
-def compare_precision(prediction, target) -> float:     # DEPRECATED
-    prediction_: list = prediction
-    target_: list = target
-    deviation: list = []
-    result_: list = []
-    _result: list = []
-
-    for i, value in enumerate(prediction_):
-        if value <= target_[i]:
-            temp = str(target_[i] - value)
-            deviation.append(f'±{temp}')
-        else:
-            if value >= target_[i]:
-                temp = str(value - target_[i])
-                deviation.append(f'±{temp}')
-
-    for _, value in enumerate(prediction_):
-        precision_ = str(int(abs((((target_[_]-value)/target_[_])*100)-100)))
-        _result.append(f'{precision_}%')
-        result_.append(int(precision_))
-
-    average_precision: int = round(average(result_))
-    print(f'Precision = {average_precision}%')
-
-    print('\nPrediction:')
-    print(*prediction_, sep=' - ')
-
-    print('\nTarget:')
-    print(*target_, sep=' - ')
-
-    return average_precision/100
-
-
-def average(args: list) -> int:
-    return sum(args)/len(args)
+import random
+import time
 
 
 def string_value(value: int) -> str:
@@ -80,10 +45,48 @@ def precision(predictions: list, targets: list):
     print(f'\n{sorted_predictions=}\n{sorted_targets=}')
 
 
-def main() -> None:
-    p, t = dg(1, 100, 20)
+def compare_precision(prediction, target) -> float:     # DEPRECATED
+    prediction_: list = prediction
+    target_: list = target
+    deviation: list = []
+    result_: list = []
+    _result: list = []
 
-    precision(p, t)
+    for i, value in enumerate(prediction_):
+        if value <= target_[i]:
+            temp = str(target_[i] - value)
+            deviation.append(f'±{temp}')
+        else:
+            if value >= target_[i]:
+                temp = str(value - target_[i])
+                deviation.append(f'±{temp}')
+
+    for _, value in enumerate(prediction_):
+        precision_ = str(int(abs((((target_[_]-value)/target_[_])*100)-100)))
+        _result.append(f'{precision_}%')
+        result_.append(int(precision_))
+
+    average_precision: int = round(statistics.mean(result_))
+    print(f'Precision = {average_precision}%')
+
+    print('\nPrediction:')
+    print(*prediction_, sep=' - ')
+
+    print('\nTarget:')
+    print(*target_, sep=' - ')
+
+    return average_precision/100
+
+
+def main() -> None:
+    x = [random.randint(1, 2074) for _ in range(3)]
+    st: float = time.time()
+    for i, j in enumerate(x):
+        print(f'Draw {j}: ', end='')
+        temp: list = collect(j)
+        print(*temp, sep=', ')
+
+    print(f'\nTime taken: {round(time.time()-st, 3)}s')
 
 
 if __name__ == '__main__':
