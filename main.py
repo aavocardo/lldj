@@ -1,93 +1,134 @@
-from re import search
-import statistics
-import requests
-import random
+import csv
 import time
+import requests
+import mysql.connector
+from re import search
+from typing import List, Union, Set
+from dataclasses import dataclass
 
 
-def string_value(value: int) -> str:
-    return f'{value:02}'
+@dataclass
+class Lottery:
+    def __init__(self, draw: int):
+        self.draw = draw
+        self.results = Lottery.collect(self, timer=False)
+
+    def collect(self, timer: bool = False) -> List[int]:
+        st: float = time.time()
+        url: str = f'https://www.indexoflebanon.com/lottery/loto/draw/{str(self.draw)}'
+        source: str = requests.get(url, 'html.parser', timeout=30).text
+
+        results: List[int] = [j for i in range(1, 7) for j in range(1, 43)
+                              if search(f'<div class="loto_no_r bbb{str(i)}">'
+                                        f'{j:02}</div>', source)]
+
+        if timer:
+            print(f'Time taken: {round(time.time() - st, 3)}s\n')
+
+        return results
+
+    @staticmethod
+    def to_mysql(input_data: List[int]) -> None:
+        local_db = mysql.connector.connect(
+            host='localhost',
+            user='root',
+            password='',
+            database='lldj'
+        )
+
+        results: List[int] = input_data
+        query = 'INSERT INTO Results (B1, B2, B3, B4, B5, B6) VALUES (%s, %s, %s, %s, %s, %s)'
+        values = (results[0], results[1], results[2], results[3], results[4], results[5])
+
+        db = local_db.cursor()
+        db.execute(query, values)
+        local_db.commit()
+
+        print(f'{db.rowcount} record inserted')
+
+    @staticmethod
+    def to_csv(input_data: List[int]) -> None:
+        FILE_NAME = 'data.csv'
+        with open(FILE_NAME, 'a', encoding='UTF-8', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(input_data)
 
 
-def collect(draw_number: int) -> list:
-    url: str = f'https://www.indexoflebanon.com/lottery/loto/draw/{str(draw_number)}'
-    source: str = requests.get(url, 'html.parser', timeout=10).text
+@dataclass
+class Review:
+    def __init__(self, prediction: List[int], target: List[int]) -> None:
+        self.prediction = prediction
+        self.target = target
 
-    results = [j for i in range(1, 7) for j in range(1, 43)
-               if search(f'<div class="loto_no_r bbb{str(i)}">'
-                         f'{string_value(j)}</div>', source)]
+    def show(self) -> None:
+        print('Prediction: ', end='')
+        print(*self.prediction, sep=', ')
 
-    return results
+        print('Target: ', end='')
+        print(*self.target, sep=', ')
 
+    def precision(self, show: bool = False, percentage: bool = False) -> Union[int, str]:
+        if len(self.prediction) != len(self.target):
+            raise ValueError('List indexes out of range')
 
-def dg(range_min: int, range_max: int, count: int) -> tuple:    # dg: debug_generator
-    x = [random.randint(range_min, range_max) for _ in range(1, count)]
-    y = [random.randint(range_min, range_max) for _ in range(1, count)]
-    return x, y
+        exact_match = list(filter(lambda x: x in self.prediction, self.target))
+        predictions: Union[Set[int], List[int]] = [item for item in self.prediction if item not in exact_match]
+        targets: Union[Set[int], List[int]] = [item for item in self.target if item not in exact_match]
+        predictions.sort(), targets.sort()
 
+        print(predictions)
+        print(targets)
 
-def proximity_sort(list1: list, list2: list) -> tuple:
-    zl = zip(list1, list2)
-    zl = sorted(zl, key=lambda x: (abs(x[0] - x[1]), x[0]))
-    list1, list2 = zip(*zl)
-    return list1, list2
+        accuracy = 0
 
-
-def precision(predictions: list, targets: list):
-    exact_match = list(filter(lambda x: x in predictions, targets))
-    predictions: list = [item for item in predictions if item not in exact_match]
-    targets: list = [item for item in targets if item not in exact_match]
-
-    print(f'{exact_match=}\n\n{predictions=}\n{targets=}')  # NOQA
-
-    sorted_predictions, sorted_targets = proximity_sort(predictions, targets)
-
-    print(f'\n{sorted_predictions=}\n{sorted_targets=}')
-
-
-def compare_precision(prediction, target) -> float:     # DEPRECATED
-    prediction_: list = prediction
-    target_: list = target
-    deviation: list = []
-    result_: list = []
-    _result: list = []
-
-    for i, value in enumerate(prediction_):
-        if value <= target_[i]:
-            temp = str(target_[i] - value)
-            deviation.append(f'±{temp}')
+        if show:
+            print('Exact Match: ', end='')
+            print(*exact_match, sep=', ')
+        elif percentage:
+            return f'{accuracy * 100}%'
         else:
-            if value >= target_[i]:
-                temp = str(value - target_[i])
-                deviation.append(f'±{temp}')
+            return accuracy
 
-    for _, value in enumerate(prediction_):
-        precision_ = str(int(abs((((target_[_]-value)/target_[_])*100)-100)))
-        _result.append(f'{precision_}%')
-        result_.append(int(precision_))
+    @staticmethod
+    def get_closest(x, y):      # GPT3 TRASH
+        result = []
+        for i, _ in enumerate(x):
+            closest_diff = float('inf')
+            closest_pair = (None, None)
+            for j, _ in enumerate(y):
+                diff = abs(x[i] - y[j])
+                if diff < closest_diff:
+                    closest_diff = diff
+                    closest_pair = (x[i], y[j])
 
-    average_precision: int = round(statistics.mean(result_))
-    print(f'Precision = {average_precision}%')
+            if closest_diff > 5:
+                y.append(y.pop(y.index(closest_pair[1])))
 
-    print('\nPrediction:')
-    print(*prediction_, sep=' - ')
+            result.append(closest_pair)
 
-    print('\nTarget:')
-    print(*target_, sep=' - ')
+        return result
 
-    return average_precision/100
-
-
-def main() -> None:
-    x = [random.randint(1, 2074) for _ in range(3)]
-    st: float = time.time()
-    for i, j in enumerate(x):
-        print(f'Draw {j}: ', end='')
-        temp: list = collect(j)
-        print(*temp, sep=', ')
-
-    print(f'\nTime taken: {round(time.time()-st, 3)}s')
+    def try_again(self) -> None:
+        for i, _ in enumerate(self.prediction):
+            for j, _ in enumerate(self.target):
+                pass
 
 
-if __name__ == '__main__':
-    main()
+class Timer:
+    def __init__(self) -> None:
+        self.start_time = None
+
+    def start(self) -> None:
+        if self.start_time is not None:
+            raise Exception('Timer is running')
+
+        self.start_time = time.perf_counter()
+
+    def stop(self) -> None:
+        if self.start_time is None:
+            raise Exception('Timer not running')
+
+        time_taken = time.perf_counter() - self.start_time
+        self.start_time = None
+
+        print(f'Time taken: {round(time_taken, 3)}s')
