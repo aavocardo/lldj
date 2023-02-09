@@ -9,16 +9,12 @@ import csv
 
 @dataclass
 class Lottery:
-    def __init__(self, draw: Union[int, None]) -> None:
-        if draw is None:
-            print('Draw parameter none, set to default value 1')
-            self.draw = 1
-        else:
-            self.draw = draw
+    def __init__(self, draw: int) -> None:
+        self.draw = draw
         self.results = Lottery.collect(self, timer=False)
 
     def collect(self, timer: bool = False) -> List[int]:
-        st: float = time.time()
+        Timer().start()
         url: str = f'https://www.indexoflebanon.com/lottery/loto/draw/{str(self.draw)}'
         source: str = requests.get(url, 'html.parser', timeout=15).text
 
@@ -29,11 +25,11 @@ class Lottery:
         if len(results) != 6:
             raise ValueError('Length error')
         elif timer:
-            print(f'Time taken: {round(time.time() - st, 3)}s\n')
+            Timer().stop()
 
         return results
 
-    def mysql(self) -> None:
+    def to_mysql(self) -> None:
         local_db = mysql.connector.connect(
             host='localhost',
             user='root',
@@ -49,7 +45,7 @@ class Lottery:
         db.execute(query, values)
         local_db.commit()
 
-    def csv(self) -> None:
+    def to_csv(self) -> None:
         FILE_NAME = 'data.csv'
         with open(FILE_NAME, 'a', encoding='UTF-8', newline='') as file:
             writer = csv.writer(file)
@@ -95,6 +91,7 @@ class Review:
 class Timer:
     def __init__(self) -> None:
         self.start_time = None
+        self.lap = None
 
     def start(self) -> None:
         if self.start_time is not None:
@@ -106,6 +103,6 @@ class Timer:
         if self.start_time is None:
             raise Exception('Timer not running')
         else:
-            time_taken = time.perf_counter() - self.start_time
+            self.lap = round(time.perf_counter() - self.start_time, 3)
             self.start_time = None
-            print(f'Time taken: {round(time_taken, 3)}s')
+            print(f'Time taken: {self.lap}')
