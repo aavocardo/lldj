@@ -30,15 +30,15 @@ class Lottery:
         return results
 
     def to_mysql(self) -> None:
+        TABLE_NAME: str = 'Results'
         local_db = mysql.connector.connect(
             host='localhost',
             user='root',
             password='',
             database='lldj'
         )
-
         results: List[int] = self.results
-        query = 'INSERT INTO Results (B1, B2, B3, B4, B5, B6) VALUES (%s, %s, %s, %s, %s, %s)'
+        query = f'INSERT INTO {TABLE_NAME} (B1, B2, B3, B4, B5, B6) VALUES (%s, %s, %s, %s, %s, %s)'
         values = results[:6]
 
         db = local_db.cursor()
