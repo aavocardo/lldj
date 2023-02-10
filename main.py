@@ -10,8 +10,8 @@ import csv
 @dataclass
 class Lottery:
     def __init__(self, draw: int) -> None:
-        self.draw = draw
-        self.results = Lottery.collect(self, timer=False)
+        self.draw: int = draw
+        self.results: List[int] = Lottery.collect(self, timer=False)
 
     def collect(self, timer: bool = False) -> List[int]:
         Timer().start()
