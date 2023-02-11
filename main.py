@@ -1,17 +1,18 @@
 from typing import List, Union, Set
 from dataclasses import dataclass
 from re import search
-import mysql.connector
 import requests
 import time
 import csv
 
 
-@dataclass
 class Lottery:
     def __init__(self, draw: int) -> None:
-        self.draw = draw
-        self.results = Lottery.collect(self, timer=False)
+        self.draw: int = draw
+        self.results: List[int] = Lottery.collect(self, timer=False)
+
+    def __str__(self) -> str:
+        return f'{self.draw}, {self.results}'
 
     def collect(self, timer: bool = False) -> List[int]:
         Timer().start()
@@ -28,22 +29,6 @@ class Lottery:
             Timer().stop()
 
         return results
-
-    def to_mysql(self) -> None:
-        TABLE_NAME: str = 'Results'
-        local_db = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='lldj'
-        )
-        results: List[int] = self.results
-        query = f'INSERT INTO {TABLE_NAME} (B1, B2, B3, B4, B5, B6) VALUES (%s, %s, %s, %s, %s, %s)'
-        values = results[:6]
-
-        db = local_db.cursor()
-        db.execute(query, values)
-        local_db.commit()
 
     def to_csv(self) -> None:
         FILE_NAME = 'data.csv'
