@@ -1,0 +1,5 @@
+conda install -c apple tensorflow-deps==2.10
+
+python -m pip install tensorflow-macos==2.10
+python -m pip install tensorflow-metal==0.6.0
+pip install tensorflow-datasets pandas jupyterlab
