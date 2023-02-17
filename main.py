@@ -1,5 +1,4 @@
 from typing import List, Union, Set
-from dataclasses import dataclass
 from re import search
 import requests
 import time
@@ -37,7 +36,6 @@ class Lottery:
             writer.writerow(self.results)
 
 
-@dataclass
 class Review:
     def __init__(self, prediction: List[int], target: List[int]) -> None:
         self.prediction = prediction
@@ -76,7 +74,7 @@ class Review:
 class Timer:
     def __init__(self) -> None:
         self.start_time = None
-        self.lap = None
+        self.end_time = None
 
     def start(self) -> None:
         if self.start_time is not None:
@@ -88,6 +86,6 @@ class Timer:
         if self.start_time is None:
             raise Exception('Timer not running')
         else:
-            self.lap = round(time.perf_counter() - self.start_time, 3)
+            self.end_time = round(time.perf_counter() - self.start_time, 3)
             self.start_time = None
-            print(f'Time taken: {self.lap}')
+            print(f'Time taken: {self.end_time}')
