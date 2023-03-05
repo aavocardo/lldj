@@ -1,14 +1,26 @@
-# Use the official TensorFlow Docker image as a base
-FROM tensorflow/tensorflow:latest-gpu-jupyter
+FROM tensorflow/tensorflow:latest-gpu
 
-# Install dependencies
-RUN pip install matplotlib numpy pandas scikit-learn
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    python3-dev \
+    python3-pip \
+    python3-setuptools \
+    python3-wheel \
+    && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
+RUN pip3 install --no-cache-dir \
+    pandas \
+    numpy \
+    scikit-learn \
+    matplotlib \
+    jupyter
+
+COPY . /app
+
 WORKDIR /app
 
-# Copy the code to the working directory
-COPY . .
+EXPOSE 8888
 
-# Set the entrypoint to start Jupyter
-ENTRYPOINT ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--allow-root"]

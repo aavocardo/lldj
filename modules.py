@@ -1,4 +1,4 @@
-from typing import List, Union, Set
+from typing import *
 from re import search
 import requests
 import time
@@ -10,8 +10,11 @@ class Lottery:
         self.draw: int = draw
         self.results: List[int] = Lottery.collect(self, timer=False)
 
+    def __repr__(self) -> str:
+        return f'Lottery({self.draw})'
+
     def __str__(self) -> str:
-        return f'{self.draw}, {self.results}'
+        return f'self.draw = {self.draw}\nself.results = {self.results}'
 
     def collect(self, timer: bool = False) -> List[int]:
         Timer().start()
