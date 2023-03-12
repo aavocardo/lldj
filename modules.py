@@ -56,10 +56,14 @@ class Review:
 
     def precision(self, show: bool = False, percentage: bool = False) -> Union[int, str]:
         exact_match = list(filter(lambda x: x in self.prediction, self.target))
-        targets: Union[Set[int], List[int]] = sorted([item for item in self.target if item not in exact_match])
         predictions: Union[Set[int], List[int]] = sorted([item for item in self.prediction if item not in exact_match])
+        targets: Union[Set[int], List[int]] = sorted([item for item in self.target if item not in exact_match])
 
         accuracy: int = 0
+
+        print(exact_match)
+        print(targets)
+        print(predictions)
 
         for i, _ in enumerate(predictions):
             for j, _ in enumerate(targets):
@@ -92,3 +96,4 @@ class Timer:
             self.end_time = round(time.perf_counter() - self.start_time, 3)
             self.start_time = None
             print(f'Time taken: {self.end_time}')
+            return self.end_time
