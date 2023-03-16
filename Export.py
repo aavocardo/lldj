@@ -15,7 +15,7 @@ class Export:
     prediction: str = None
     target: str = None
     accuracy: int = None
-    time_taken: int = None
+    elapsed: int = None
 
     def __init__(self) -> None:
         self._date = None
@@ -35,7 +35,7 @@ class Export:
         self.prediction: str = ' - '.join(map(str, prediction))
         self.target: str = ' - '.join(map(str, target))
         self.accuracy: str = f'{accuracy}%'
-        self.time_taken = time_taken
+        self.elapsed = time_taken
 
     @property
     def date(self) -> str:
@@ -58,7 +58,7 @@ class Export:
     @property
     def df(self) -> DataFrame:
         return DataFrame(columns=['Prediction', 'Target', 'Accuracy', 'Epochs', 'Window Size',
-                                  'Batch Size', 'LSTM', 'Dropout Variance', 'Dense Layers'])
+                                  'Batch Size', 'LSTM', 'Dropout Variance', 'Dense Layers', 'Elapsed'])
 
     @property
     def data(self) -> Dict:
@@ -70,7 +70,8 @@ class Export:
                 'Batch Size': self.batch_size,
                 'LSTM': self.lstm,
                 'Dropout Variance': self.dropout,
-                'Dense Layers': self.dense}
+                'Dense Layers': self.dense,
+                'Elapsed': self.elapsed}
 
     def __repr__(self) -> property:
         return __class__
@@ -80,7 +81,7 @@ class Export:
                f'{self.window_size}\nLSTM Nodes: {self.lstm}\nDense Layers:' \
                f'{self.dense}\nDropout Variance: {self.dropout}\nPrediction: ' \
                f'{self.prediction}\nTarget: {self.target}\nAccuracy: {self.accuracy}\n' \
-               f'Time Taken: {self.time_taken}\nDate: {self.date}\nTime: {self.time}'
+               f'Time Taken: {self.elapsed}\nDate: {self.date}\nTime: {self.time}'
 
     def append(self) -> None:
         columns = {self.df.columns[i]: self.data[i] for i in range(len(self.df.columns))}
