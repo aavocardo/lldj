@@ -17,7 +17,7 @@ RUN pip3 install --no-cache-dir \
     matplotlib \
     jupyter
 
-COPY . /app
+COPY .. /app
 
 WORKDIR /app
 

@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class Export:
-    history: DataFrame = read_csv('./Data/Export.csv')
+    history: DataFrame = read_csv('Data/Export.csv')
 
     epochs: int = None
     batch_size: int = None
