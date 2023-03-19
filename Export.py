@@ -22,9 +22,9 @@ class Export:
         self._time = None
 
     def hyper_parameters(self, epochs, batch_size, window_size) -> None:
-        self.epochs: int = epochs
-        self.batch_size: int = batch_size
-        self.window_size: int = window_size
+        self.epochs = epochs
+        self.batch_size = batch_size
+        self.window_size = window_size
 
     def model_parameters(self, lstm, dense, dropout) -> None:
         self.lstm = lstm
