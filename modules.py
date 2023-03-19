@@ -2,12 +2,8 @@ from typing import List, Any, Set, Union
 from requests import get
 from smtplib import SMTP
 from ssl import create_default_context
-# from email.mime.text import MIMEText
-# from email.mime.multipart import MIMEMultipart
-# from email.mime.base import MIMEBase
-# from email import encoders
 from re import search
-import time
+from time import perf_counter
 import csv
 
 
@@ -49,17 +45,29 @@ class Email:
     def __init__(self, email, password) -> None:
         self.sender: str = email
         self.password: str = password
-        self._message: Any = None
+        self._message: Any = ''
+        self._attachment: List[str] = []
 
     @property
     def message(self) -> Any:
         return self._message
 
     @message.setter
-    def message(self, message) -> None:
+    def message(self, message: Any) -> None:
         self._message = message
 
+    @property
+    def attachment(self) -> List[str]:
+        return self._attachment
+
+    @attachment.setter
+    def attachment(self, attachment: List[str]) -> None:
+        self._attachment = attachment
+
     def send(self, recipient: str) -> None:
+        if self.message is None:
+            raise Exception('Message empty')
+
         smtp_server: str = 'smtp.gmail.com'
         port: int = 587
 
@@ -124,13 +132,13 @@ class Timer:
         if self.start_time is not None:
             raise Exception('Timer is running')
         else:
-            self.start_time = time.perf_counter()
+            self.start_time = perf_counter()
 
     def stop(self) -> None:
         if self.start_time is None:
             raise Exception('Timer not running')
         else:
-            self.end_time = round(time.perf_counter() - self.start_time, 3)
+            self.end_time = round(perf_counter() - self.start_time, 3)
             self.start_time = None
             print(f'Time taken: {self.end_time}')
             return self.end_time
