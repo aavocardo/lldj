@@ -33,7 +33,7 @@ class Lottery:
         return results
 
     def to_csv(self) -> None:
-        FILE_NAME = './Data/data.csv'
+        FILE_NAME = 'Data/data.csv'
         with open(FILE_NAME, 'a', encoding='UTF-8', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(self.results)
