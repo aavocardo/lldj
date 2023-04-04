@@ -1,25 +1,23 @@
-# Use an official Ubuntu 18.04 as a parent image
-FROM nvidia/cuda:11.4.2-cudnn8-runtime-ubuntu18.04
+FROM tensorflow/tensorflow:latest-gpu
 
-# Set the working directory to /app
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Install necessary packages
-RUN apt-get update && \
-    apt-get install -y python3-pip python3-dev python3-venv && \
-    apt-get install -y curl && \
-    apt-get install -y wget && \
-    apt-get install -y git && \
-    apt-get install -y libsm6 libxext6 libxrender-dev
+COPY . .
 
-# Install TensorFlow and its dependencies
-RUN pip3 install tensorflow-gpu==2.7.0
+RUN pip install \
+    jupyter \
+    scikit-learn \
+    pandas \
+    numpy \
+    matplotlib
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+CMD ["jupyer", "notebook", "--ip", "0.0.0.0", "--port", "8888", "--allow-root"]
 
-# Set environment variables
-ENV PYTHONPATH=$PYTHONPATH:/app
-
-# Run the command when the container starts
-CMD ["python3", "app.py"]
+# docker build -t <name> .
+# docker run --gpus all -p 8888:8888 <name>
